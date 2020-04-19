@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'java-library'
+//    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = 'http://mvn.finedevelop.com/repository/maven-public/'
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.eclipse.jgit:org.eclipse.jgit:5.7.0.202003110725-r'
+    implementation 'commons-io:commons-io:2.6'
+    implementation 'com.fr.core:fine-core:10.0-RELEASE-SNAPSHOT'
+    implementation 'org.tukaani:xz:1.8'
+    implementation 'org.slf4j:slf4j-nop:1.7.2'
+    implementation 'cn.hutool:hutool-all:5.2.3'
+    implementation 'com.google.guava:guava:19.0'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+}
+
+group = 'com.fr'
+version = '0.0.1-SNAPSHOT'
+description = 'check-test-coverage'
+sourceCompatibility = '1.8'
+
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+//compileKotlin {
+//    kotlinOptions {
+//        jvmTarget = "1.8"
+//    }
+//}
+//compileTestKotlin {
+//    kotlinOptions {
+//        jvmTarget = "1.8"
+//    }
+//}

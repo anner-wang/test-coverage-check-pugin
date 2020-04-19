@@ -1,0 +1,5 @@
+rootProject.name = 'gitTestResource'
+include 'subModule1'
+include 'emptyModule'
+include 'instrumentedModule'
+

@@ -1,0 +1,13 @@
+0000000000000000000000000000000000000000 927889c2e0f0d3a6312ee62c35a70990971f9ebc hiram <hiram@finereport.com> 1587102313 +0800	commit (initial): 测试git工程
+927889c2e0f0d3a6312ee62c35a70990971f9ebc 927889c2e0f0d3a6312ee62c35a70990971f9ebc hiram <hiram@finereport.com> 1587102385 +0800	checkout: moving from master to newBrance
+927889c2e0f0d3a6312ee62c35a70990971f9ebc 9e6a494b85b223d9a4851b98540adf335e97e0ed hiram <hiram@finereport.com> 1587102660 +0800	commit: 提交一些新方法
+9e6a494b85b223d9a4851b98540adf335e97e0ed 927889c2e0f0d3a6312ee62c35a70990971f9ebc hiram <hiram@finereport.com> 1587102812 +0800	checkout: moving from newBrance to master
+927889c2e0f0d3a6312ee62c35a70990971f9ebc 927889c2e0f0d3a6312ee62c35a70990971f9ebc hiram <hiram@finereport.com> 1587102853 +0800	checkout: moving from master to OtherBranch
+927889c2e0f0d3a6312ee62c35a70990971f9ebc dbb4da8968fa9d6c479234589d9fb68959eb704d hiram <hiram@finereport.com> 1587102938 +0800	commit: 其他分支提交的代码
+dbb4da8968fa9d6c479234589d9fb68959eb704d dbb4da8968fa9d6c479234589d9fb68959eb704d hiram <hiram@finereport.com> 1587102966 +0800	checkout: moving from OtherBranch to masterBack
+dbb4da8968fa9d6c479234589d9fb68959eb704d dbb4da8968fa9d6c479234589d9fb68959eb704d hiram <hiram@finereport.com> 1587102968 +0800	checkout: moving from masterBack to OtherBranch
+dbb4da8968fa9d6c479234589d9fb68959eb704d 927889c2e0f0d3a6312ee62c35a70990971f9ebc hiram <hiram@finereport.com> 1587102970 +0800	checkout: moving from OtherBranch to master
+927889c2e0f0d3a6312ee62c35a70990971f9ebc 32721251ef5819d12dd9b44b715ec57607c6ddae hiram <hiram@finereport.com> 1587102978 +0800	merge OtherBranch: Merge made by the 'recursive' strategy.
+32721251ef5819d12dd9b44b715ec57607c6ddae 32721251ef5819d12dd9b44b715ec57607c6ddae hiram <hiram@finereport.com> 1587103091 +0800	checkout: moving from master to master_case1
+32721251ef5819d12dd9b44b715ec57607c6ddae 9e6a494b85b223d9a4851b98540adf335e97e0ed hiram <hiram@finereport.com> 1587103109 +0800	checkout: moving from master_case1 to newBrance
+9e6a494b85b223d9a4851b98540adf335e97e0ed 9e6a494b85b223d9a4851b98540adf335e97e0ed hiram <hiram@finereport.com> 1587103120 +0800	checkout: moving from newBrance to newBranch_case1
