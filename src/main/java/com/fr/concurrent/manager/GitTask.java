@@ -40,13 +40,19 @@ public class GitTask implements Task {
     @Override
     public String getGroup() {
         long hash = HashUtil.mixHash(StrUtil.format("{}-{}-{}", from.getUserName(), from.getRemoteURL(), to.getRemoteURL()));
-        return String.valueOf(hash).substring(1);
+        return String.valueOf(Math.abs(hash));
     }
 
     @Override
     public void start() {
         status = TaskStatus.WAIT;
         taskListener.onStart(this);
+    }
+
+    @Override
+    public void calculate() {
+        status=TaskStatus.RUNNING;
+        taskListener.onCalculate(this);
     }
 
     @Override

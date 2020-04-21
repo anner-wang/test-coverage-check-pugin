@@ -36,7 +36,7 @@ public class CookbookHelper {
         if (!FileUtil.exist(localPath)) {
             throw new InvalidParameterException("The local file path does not exist.");
         }
-        String gitPath = StrUtil.format("{}{}.gitDir", localPath, File.separator);
+        String gitPath = StrUtil.format("{}{}.git", localPath, File.separator);
         StaticLog.info(StrUtil.format("open local repository {}...",gitPath));
         return openGitRepo(gitPath);
     }

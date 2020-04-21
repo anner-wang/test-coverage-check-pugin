@@ -25,6 +25,7 @@ dependencies {
     implementation 'org.tukaani:xz:1.8'
     implementation 'cn.hutool:hutool-all:5.2.3'
     implementation 'com.google.guava:guava:19.0'
+    implementation 'org.gradle:gradle-tooling-api:4.3'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.2.6.RELEASE'
     testImplementation 'junit:junit:4.12'
 }

@@ -2,13 +2,13 @@ package com.fr.git;
 
 import com.fr.bean.CodeLine;
 import com.fr.bean.LocalInfo;
+import com.fr.check.CheckService;
+import com.fr.git.helper.CookbookHelper;
 import com.fr.git.service.DiffService;
 import com.fr.git.service.LocalDiffService;
 import com.fr.git.service.coverage.CoverageService;
-import com.fr.git.service.coverage.RepositoryService;
-import com.fr.git.helper.CookbookHelper;
+import com.fr.jacoco.parser.FilePathClassNameConverter;
 import com.fr.jacoco.report.JacocoXmlCheckService;
-import com.fr.check.CheckService;
 import com.fr.utils.TestResourceUtils;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -17,6 +17,7 @@ import org.eclipse.jgit.lib.Repository;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LocalCalculate implements Calculate {
 
@@ -34,8 +35,8 @@ public class LocalCalculate implements Calculate {
 
         CoverageService coverageService = new CoverageService();
         CheckService checkService = new JacocoXmlCheckService(TestResourceUtils.getResourceFile("git/simpleCase/build/jacoco"));
-
         List<CodeLine> codeLineBeanList = coverageService.getCodeLineList(diffList, repository);
-        return coverageService.calTestCoverage(codeLineBeanList, checkService);
+        List<CodeLine> collect = codeLineBeanList.stream().map(codeLine -> new CodeLine(new FilePathClassNameConverter(codeLine.getPath()).convert(), codeLine.getLine())).collect(Collectors.toList());
+        return coverageService.calTestCoverage(collect, checkService);
     }
 }

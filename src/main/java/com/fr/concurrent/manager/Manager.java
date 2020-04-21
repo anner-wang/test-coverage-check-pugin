@@ -12,96 +12,107 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @Component
 public class Manager implements TaskListener {
-    private Queue<Task> queue = new LinkedList<>();
+    private Queue<Task> waitQueue = new LinkedList<>();
+    private Queue<Task> runningQueue = new LinkedList<>();
 
     private final Lock lock = new ReentrantLock(true);
     private final Condition condition = lock.newCondition();
+
+    public Task take() {
+        try {
+            lock.lock();
+            while (waitQueue.peek() == null) {
+                condition.await();
+            }
+            Task task = waitQueue.remove();
+            StaticLog.info(StrUtil.format("Task {} take from the wait queue , now size = {}", task.getGroup(), waitQueue.size()));
+            return task;
+        } catch (Exception ignore) {
+
+        } finally {
+            lock.unlock();
+        }
+        return null;
+    }
+
+    public void put(Task task) {
+        try {
+            lock.lock();
+            for (Task t : waitQueue) {
+                if (task.getGroup().equals(t.getGroup())) {
+                    StaticLog.warn(StrUtil.format("Task {} already  in the  wait queue, now size = {}", task.getGroup(), waitQueue.size()));
+                    return;
+                }
+            }
+            for (Task t : runningQueue) {
+                if (task.getGroup().equals(t.getGroup())) {
+                    StaticLog.warn(StrUtil.format("Task {} already  in the  running queue, now size = {}", task.getGroup(), runningQueue.size()));
+                    return;
+                }
+            }
+            waitQueue.add(task);
+            StaticLog.info(StrUtil.format("Task {} put in the  wait queue, now size = {}", task.getGroup(), waitQueue.size()));
+            condition.notifyAll();
+        } catch (Exception ignore) {
+
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public int getWaitNumber() {
+        try {
+            lock.lock();
+            return waitQueue.size();
+        } catch (Exception ignore) {
+
+        } finally {
+            lock.unlock();
+        }
+        return -1;
+    }
+
+    public int getRunningNumber() {
+        try {
+            lock.lock();
+            return runningQueue.size();
+        } catch (Exception ignore) {
+
+        } finally {
+            lock.unlock();
+        }
+        return -1;
+    }
+
+    @Override
+    public void onStart(Task task) {
+
+    }
+
+    @Override
+    public void onCalculate(Task task) {
+        try {
+            lock.lock();
+            waitQueue.remove(task);
+            runningQueue.add(task);
+            StaticLog.info(StrUtil.format("Task {} put into  the running queue , now size = {}", task.getGroup(), runningQueue.size()));
+        } catch (Exception ignore) {
+
+        } finally {
+            lock.unlock();
+        }
+    }
 
     @Override
     public void onComplete(Task task) {
         try {
             lock.lock();
-            queue.remove(task);
-            StaticLog.info(StrUtil.format("Task {} remove from the manager queue", task.getGroup()));
-        } catch (Exception e) {
+            runningQueue.remove(task);
+            StaticLog.info(StrUtil.format("Task {} remove from the running queue ,  now size = {}", task.getGroup(), runningQueue.size()));
+        } catch (Exception ignore) {
 
         } finally {
             lock.unlock();
         }
-    }
-
-    @Override
-    public void onStart(Task task) {
-        try {
-            lock.lock();
-            queue.add(task);
-            StaticLog.info(StrUtil.format("Task {} put in the manager queue", task.getGroup()));
-            condition.notifyAll();
-        } catch (Exception e) {
-
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    public Task take() throws InterruptedException {
-        try {
-            lock.lock();
-            while (isEmpty()) {
-                condition.await();
-            }
-            Task task = get();
-            task.setStatus(TaskStatus.RUNNING);
-            StaticLog.info(StrUtil.format("Task {} take from the manager queue", task.getGroup()));
-            return task;
-        } catch (Exception e) {
-
-        } finally {
-            lock.unlock();
-        }
-        return null;
-    }
-
-    public int waitTaskNumber() {
-        try {
-            lock.lock();
-            return queue.size();
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    public boolean isEmpty() {
-        try {
-            lock.lock();
-            for (Task task : queue) {
-                if (task.getStatus() == TaskStatus.WAIT) {
-                    return false;
-                }
-            }
-            return true;
-        } catch (Exception e) {
-
-        } finally {
-            lock.unlock();
-        }
-        return true;
-    }
-
-    private Task get() {
-        try {
-            lock.lock();
-            for (Task task : queue) {
-                if (task.getStatus() == TaskStatus.WAIT) {
-                    return task;
-                }
-            }
-            return null;
-        } catch (Exception e) {
-
-        } finally {
-            lock.unlock();
-        }
-        return null;
     }
 }

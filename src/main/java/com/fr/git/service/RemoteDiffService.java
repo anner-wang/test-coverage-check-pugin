@@ -3,6 +3,7 @@ package com.fr.git.service;
 import com.fr.bean.RemoteInfo;
 import com.fr.git.service.coverage.RepositoryService;
 import com.fr.git.service.merge.ShowMergeBaseBranchDiff;
+import com.fr.gradle.GradleProject;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.lib.Repository;
@@ -25,11 +26,17 @@ public class RemoteDiffService implements DiffService {
 
         repositoryService.addRemoteURL(from.getRemoteName(), from.getRemoteURL());
 
-        String fromBranchName = from.getBranchName();
-        String toBranchName = to.getBranchName();
-
         repositoryService.fetch(from.getRemoteName(), from.getRemoteURL());
         repositoryService.fetch(to.getRemoteName(), to.getRemoteURL());
+
+        repositoryService.checkout(from.getUserName(), from.getRemoteName(), from.getBranchName());
+        repositoryService.pull(from.getRemoteName(), from.getBranchName());
+
+        GradleProject gradleProject = new GradleProject(repository.getDirectory().getParent());
+        gradleProject.runTasks("jacocoTestReport");
+
+        String fromBranchName = from.getBranchName();
+        String toBranchName = to.getBranchName();
 
         ShowMergeBaseBranchDiff showMergeBaseBranchDiff = new ShowMergeBaseBranchDiff(repository,
                 to.getRemoteName(), from.getRemoteName(), toBranchName, fromBranchName);

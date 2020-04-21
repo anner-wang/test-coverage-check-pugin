@@ -2,15 +2,22 @@ package com.fr.git.service.coverage;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.StaticLog;
+import com.fr.bean.RemoteInfo;
+import com.fr.git.Calculate;
+import com.fr.git.RemoteCalculate;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.URIish;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RepositoryService {
 
@@ -22,6 +29,7 @@ public class RepositoryService {
 
     /**
      * 有一类账户的ssh的链接和用户的ssh链接不同,这里第二次尝试一下
+     *
      * @param remoteName
      * @param remoteURL
      * @throws GitAPIException
@@ -35,7 +43,7 @@ public class RepositoryService {
                     .setCheckFetchedObjects(true)
                     .call();
         } catch (GitAPIException e) {
-            removeRemoteURL(remoteName);
+            StaticLog.warn(StrUtil.format("fetch {} fail try to replace ~ ", remoteURL), "INFO");
             addRemoteURL(remoteName, remoteURL.replace("~", ""));
             git.fetch()
                     .setRemote(remoteName)
@@ -45,7 +53,25 @@ public class RepositoryService {
         StaticLog.info(StrUtil.format("fetch repository {}-{} success", repository.getDirectory(), remoteName), "INFO");
     }
 
+    public void pull(String remoteName, String branchName) throws GitAPIException {
+        Git git = new Git(repository);
+        git.pull().setRemote(remoteName).setRemoteBranchName(branchName).call();
+    }
+
+    public void checkout(String branchName, String remoteName, String remoteBranch) throws GitAPIException {
+        Git git = new Git(repository);
+        git.branchCreate()
+                .setName(branchName)
+                .setStartPoint(StrUtil.format("{}/{}", remoteName, remoteBranch))
+                .setForce(true)
+                .call();
+        git.checkout().setName(branchName).call();
+    }
+
     public void addRemoteURL(String remoteKey, String remoteURL) throws URISyntaxException, GitAPIException {
+        if (getLocalRemoteNameList().contains(remoteKey)) {
+            removeRemoteURL(remoteKey);
+        }
         Git git = new Git(repository);
         git.remoteAdd()
                 .setName(remoteKey)
@@ -61,10 +87,47 @@ public class RepositoryService {
                 .call();
     }
 
+    public List<Ref> getLocalBranchList() throws GitAPIException {
+        Git git = new Git(repository);
+        return git.branchList()
+                .setListMode(ListBranchCommand.ListMode.ALL)
+                .call().stream().filter(ref -> ref.getName().startsWith(Constants.R_HEADS)).collect(Collectors.toList());
+    }
+
     public List<Ref> getRemoteBranchList() throws GitAPIException {
         Git git = new Git(repository);
         return git.branchList()
                 .setListMode(ListBranchCommand.ListMode.REMOTE)
                 .call();
     }
+
+    public List<String> getLocalRemoteNameList() throws GitAPIException {
+        List<String> ansList = new ArrayList<>();
+        Git git = new Git(repository);
+
+        for (RemoteConfig remoteConfig : git.remoteList().call()) {
+            ansList.add(remoteConfig.getName());
+        }
+        return ansList;
+    }
+
+    public static void main(String[] args) throws Exception {
+        RemoteInfo from = new RemoteInfo();
+        RemoteInfo to = new RemoteInfo();
+
+        from.setUserName("enner");
+        from.setBranchName("master");
+        from.setRemoteName("enner");
+        from.setRemoteURL("ssh://git@code.fineres.com:7999/~anner/gittestresource.git");
+        from.setRepoName("gittestresource");
+        to.setUserName("hiram");
+        to.setBranchName("master");
+        to.setRemoteName("origin");
+        to.setRemoteURL("ssh://git@code.fineres.com:7999/~hiram/gittestresource.git");
+        to.setRepoName("gittestresource");
+
+        Calculate calculate = new RemoteCalculate(from, to);
+        System.out.println(calculate.calTestCoverage());
+    }
+
 }

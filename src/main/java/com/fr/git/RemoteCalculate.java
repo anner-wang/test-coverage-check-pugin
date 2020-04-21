@@ -6,18 +6,21 @@ import cn.hutool.log.StaticLog;
 import com.fr.bean.CodeLine;
 import com.fr.bean.RemoteInfo;
 import com.fr.check.CheckService;
-import com.fr.check.CheckServiceMocker;
 import com.fr.constants.Local;
 import com.fr.git.helper.CookbookHelper;
 import com.fr.git.service.DiffService;
 import com.fr.git.service.RemoteDiffService;
 import com.fr.git.service.coverage.CoverageService;
 import com.fr.git.sync.CodeSync;
+import com.fr.jacoco.parser.FilePathClassNameConverter;
+import com.fr.jacoco.report.JacocoXmlCheckService;
+import com.fr.utils.TestResourceUtils;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.lib.Repository;
 
 import java.io.File;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RemoteCalculate implements Calculate {
     private RemoteInfo from;
@@ -46,9 +49,9 @@ public class RemoteCalculate implements Calculate {
         }
 
         CoverageService coverageService = new CoverageService();
-        CheckService checkService = new CheckServiceMocker();
-//        CheckService checkService = new JacocoXmlCheckService(TestResourceUtils.getResourceFile("git/simpleCase/build/jacoco"));
+        CheckService checkService = new JacocoXmlCheckService(TestResourceUtils.getResourceFile("git/simpleCase/build/jacoco"));
         List<CodeLine> codeLineBeanList = coverageService.getCodeLineList(diffEntryList, repository);
-        return coverageService.calTestCoverage(codeLineBeanList, checkService);
+        List<CodeLine> collect = codeLineBeanList.stream().map(codeLine -> new CodeLine(new FilePathClassNameConverter(codeLine.getPath()).convert(), codeLine.getLine())).collect(Collectors.toList());
+        return coverageService.calTestCoverage(collect, checkService);
     }
 }

@@ -1,6 +1,6 @@
 package com.fr.bean;
 
-import java.util.Objects;
+import com.fr.stable.AssistUtils;
 
 /**
  * @description:
@@ -36,16 +36,14 @@ public class CodeLine {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CodeLine codeLine = (CodeLine) o;
-        return Objects.equals(path, codeLine.path) &&
-                Objects.equals(line, codeLine.line);
+    public boolean equals(Object obj) {
+        return obj instanceof CodeLine
+                && AssistUtils.equals(this.path,((CodeLine)obj).path)
+                && AssistUtils.equals(this.line,((CodeLine)obj).line);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(path, line);
+        return AssistUtils.hashCode(path, line);
     }
 }

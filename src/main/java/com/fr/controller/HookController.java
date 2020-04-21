@@ -29,17 +29,17 @@ public class HookController {
     }
 
     @RequestMapping("/coverage")
-    public ResponseInfo calTestCoverage(@RequestParam(value = "from", required = true) String fromRef,
-                                        @RequestParam(value = "to", required = true) String toRef) throws Exception {
+    public double calTestCoverage(@RequestParam(value = "from", required = true) String fromRef,
+                                  @RequestParam(value = "to", required = true) String toRef) throws Exception {
         RemoteInfo from = Converter.RefStr2RemoteInfo(fromRef, true);
         RemoteInfo to = Converter.RefStr2RemoteInfo(toRef, false);
         Task task = new GitTask(manager, from, to);
         if (map.contains(task.getGroup())) {
-            return map.get(task.getGroup());
+            return map.get(task.getGroup()).getCoverage();
         }
-        task.start();
-        map.put(task.getGroup(),new ResponseInfo(task.getStatus(),0));
+        manager.put(task);
+        map.put(task.getGroup(), new ResponseInfo(task.getStatus(), 0));
         asyncService.execute();
-        return map.get(task.getGroup());
+        return map.get(task.getGroup()).getCoverage();
     }
 }

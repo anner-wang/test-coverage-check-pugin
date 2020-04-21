@@ -1,5 +1,8 @@
 package com.fr.bean;
 
+import com.fr.stable.AssistUtils;
+import com.fr.stable.version.ProductVersion;
+
 import java.util.Objects;
 
 public class LocalInfo {
@@ -40,19 +43,18 @@ public class LocalInfo {
         this.remoteBranch = remoteBranch;
     }
 
+
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        LocalInfo localInfo = (LocalInfo) o;
-        return Objects.equals(repoPath, localInfo.repoPath) &&
-                Objects.equals(remoteName, localInfo.remoteName) &&
-                Objects.equals(remoteBranch, localInfo.remoteBranch);
+    public boolean equals(Object obj) {
+        return obj instanceof LocalInfo
+                && AssistUtils.equals(this.repoPath, ((LocalInfo)obj).repoPath)
+                && AssistUtils.equals(this.remoteBranch, ((LocalInfo) obj).remoteBranch)
+                && AssistUtils.equals(this.remoteName, ((LocalInfo) obj).remoteName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(repoPath, remoteName, remoteBranch);
+        return AssistUtils.hashCode(repoPath,remoteBranch,remoteBranch);
     }
 
     @Override

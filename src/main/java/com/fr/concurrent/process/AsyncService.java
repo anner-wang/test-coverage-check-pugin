@@ -24,7 +24,10 @@ public class AsyncService  {
     @Async("taskExecutor")
     public void execute() throws Exception {
         Task task = manager.take();
+        task.start();
+        map.put(task.getGroup(), new ResponseInfo(task.getStatus(), 0));
         Calculate calculate = new RemoteCalculate(task.getFrom(), task.getTo());
+        task.calculate();
         double coverage = calculate.calTestCoverage();
         task.complete();
         map.put(task.getGroup(), new ResponseInfo(task.getStatus(), coverage));

@@ -1,5 +1,7 @@
 package com.fr.bean;
 
+import com.fr.stable.AssistUtils;
+
 import java.util.Objects;
 
 public class RemoteInfo {
@@ -62,21 +64,19 @@ public class RemoteInfo {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        RemoteInfo gitInfo = (RemoteInfo) o;
-        return Objects.equals(userName, gitInfo.userName) &&
-                Objects.equals(repoName, gitInfo.repoName) &&
-                Objects.equals(branchName, gitInfo.branchName) &&
-                Objects.equals(remoteName, gitInfo.remoteName) &&
-                Objects.equals(remoteURL, gitInfo.remoteURL) &&
-                Objects.equals(localPosition, gitInfo.localPosition);
+    public boolean equals(Object obj) {
+        return obj instanceof RemoteInfo
+                && AssistUtils.equals(this.userName, ((RemoteInfo) obj).userName)
+                && AssistUtils.equals(this.repoName, ((RemoteInfo) obj).repoName)
+                && AssistUtils.equals(this.branchName, ((RemoteInfo) obj).branchName)
+                && AssistUtils.equals(this.remoteName, ((RemoteInfo) obj).remoteName)
+                && AssistUtils.equals(this.remoteURL, ((RemoteInfo) obj).remoteURL)
+                && AssistUtils.equals(this.localPosition, ((RemoteInfo) obj).localPosition);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userName, repoName, branchName, remoteName, remoteURL, localPosition);
+        return AssistUtils.hashCode(userName, repoName, branchName, remoteName, remoteURL, localPosition);
     }
 
     @Override
