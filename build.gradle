@@ -30,19 +30,27 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-group = 'com.fr'
+group = 'com.fr.coverage'
 version = '0.0.1-SNAPSHOT'
 description = 'check-test-coverage'
 sourceCompatibility = '1.8'
 
 publishing {
     publications {
-        maven(MavenPublication) {
-            from(components.java)
+        myLibrary(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url 'http://mvn.finedevelop.com/repository/dev/'
+            credentials {
+                username 'dev'
+                password 'dev'
+            }
         }
     }
 }
-
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
     sourceCompatibility = '1.8'
