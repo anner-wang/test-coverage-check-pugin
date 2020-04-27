@@ -43,7 +43,7 @@ public class Converter {
             gitInfo.setRemoteName(Local.DEFAULT_REMOTE_NAME.getValue());
         }
 
-        String remoteURL = StrUtil.format("{}://git@{}:{}/~{}/{}.git", Server.PROTOCOL.getValue(), Server.IP.getValue(),
+        String remoteURL = StrUtil.format("ssh://git@{}:{}/~{}/{}.git", Server.IP.getValue(),
                 Server.PORT.getValue(), userName, repoName);
         gitInfo.setRemoteURL(remoteURL);
 

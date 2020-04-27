@@ -12,9 +12,10 @@ import com.fr.coverage.git.service.DiffService;
 import com.fr.coverage.git.service.RemoteDiffService;
 import com.fr.coverage.git.service.coverage.CoverageService;
 import com.fr.coverage.git.sync.CodeSync;
-import com.fr.coverage.jacoco.parser.FilePathClassNameConverter;
+import com.fr.coverage.jacoco.parser.FilePathConverter;
 import com.fr.coverage.jacoco.report.JacocoXmlCheckService;
-import com.fr.coverage.utils.TestResourceUtils;
+import com.fr.coverage.json.bean.JsonInfo;
+import com.fr.coverage.utils.FileJsonUtils;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.lib.Repository;
 
@@ -51,8 +52,13 @@ public class RemoteCalculate implements Calculate {
         CoverageService coverageService = new CoverageService();
         CheckService checkService = new JacocoXmlCheckService(FileUtil.file(StrUtil.format("{}{}build{}jacoco",
                 to.getLocalPosition(), File.separator, File.separator)));
+
         List<CodeLine> codeLineBeanList = coverageService.getCodeLineList(diffEntryList, repository);
-        List<CodeLine> collect = codeLineBeanList.stream().map(codeLine -> new CodeLine(new FilePathClassNameConverter(codeLine.getPath()).convert(), codeLine.getLine())).collect(Collectors.toList());
-        return coverageService.calTestCoverage(collect, checkService);
+        List<CodeLine> collect = codeLineBeanList.stream().map(codeLine -> new CodeLine(new FilePathConverter(codeLine.getPath()).convert(), codeLine.getLine())).collect(Collectors.toList());
+
+        JsonInfo jsonInfo = coverageService.generateCoverageJsonObj(collect, checkService);
+        // 保存json对象
+        FileJsonUtils.save(jsonInfo);
+        return jsonInfo.getCoverage();
     }
 }

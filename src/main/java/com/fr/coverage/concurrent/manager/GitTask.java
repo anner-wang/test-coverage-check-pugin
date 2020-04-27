@@ -1,6 +1,7 @@
 package com.fr.coverage.concurrent.manager;
 
 
+import cn.hutool.core.util.StrUtil;
 import com.fr.coverage.bean.RemoteInfo;
 import com.fr.stable.AssistUtils;
 
@@ -42,6 +43,11 @@ public class GitTask implements Task {
     @Override
     public String getId() {
         return latestCommitId;
+    }
+
+    @Override
+    public String getGroup() {
+        return StrUtil.format("{}-{}", to.getRepoName(), to.getBranchName());
     }
 
     @Override

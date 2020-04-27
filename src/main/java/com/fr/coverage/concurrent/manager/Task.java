@@ -13,6 +13,8 @@ public interface Task {
 
     String getId();
 
+    String getGroup();
+
     void start();
 
     void complete();

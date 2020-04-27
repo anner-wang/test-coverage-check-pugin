@@ -47,4 +47,9 @@ public class CookbookHelper {
         builder.setGitDir(new File(gitPath));
         return builder.readEnvironment().build();
     }
+
+    public static Repository findGitRepo(String currentPath) throws IOException {
+        FileRepositoryBuilder builder = new FileRepositoryBuilder();
+        return builder.findGitDir(new File(currentPath)).build();
+    }
 }

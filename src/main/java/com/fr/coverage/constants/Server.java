@@ -2,14 +2,14 @@ package com.fr.coverage.constants;
 
 public enum Server {
 
-    IP("localhost"), PORT("7999"), PROTOCOL("ssh");
+    IP, PORT;
 
     private String value;
 
-    Server(String value) {
+
+    public void setValue(String value) {
         this.value = value;
     }
-
 
     public String getValue() {
         return value;

@@ -41,7 +41,7 @@ public class Manager implements TaskListener {
 
     private boolean isSameRunningTaskExist(Task task) {
         for (Task runningTask : runningQueue) {
-            if (runningTask.getId().equals(task.getId())) {
+            if (runningTask.getGroup().equals(task.getGroup())) {
                 return true;
             }
         }

@@ -1,7 +1,7 @@
 package com.fr.coverage.concurrent.manager;
 
 public enum TaskStatus {
-    WAIT("WAIT"),RUNNING("RUNNING"),FINISH("FINISH");
+    WAIT("WAIT"),RUNNING("RUNNING"),FAIL("FAIL"),FINISH("FINISH");
 
     private String value;
 

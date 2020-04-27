@@ -1,5 +1,6 @@
 package com.fr.coverage.controller;
 
+import cn.hutool.json.JSONUtil;
 import com.fr.coverage.bean.RemoteInfo;
 import com.fr.coverage.bean.ResponseInfo;
 import com.fr.coverage.concurrent.RequestMap;
@@ -29,18 +30,18 @@ public class HookController {
     }
 
     @RequestMapping("/coverage")
-    public double calTestCoverage(@RequestParam(value = "latestCommitId", required = true) String latestCommitId,
+    public String calTestCoverage(@RequestParam(value = "latestCommitId", required = true) String latestCommitId,
                                   @RequestParam(value = "from", required = true) String fromRef,
                                   @RequestParam(value = "to", required = true) String toRef) throws Exception {
         RemoteInfo from = Converter.RefStr2RemoteInfo(fromRef, true);
         RemoteInfo to = Converter.RefStr2RemoteInfo(toRef, false);
         Task task = new GitTask(manager, latestCommitId, from, to);
         if (map.contains(task.getId())) {
-            return map.get(task.getId()).getCoverage();
+            return JSONUtil.toJsonStr(map.get(task.getId()));
         }
         manager.put(task);
-        map.put(task.getId(), new ResponseInfo(task.getStatus(), 0));
+        map.put(task.getId());
         asyncService.execute();
-        return map.get(task.getId()).getCoverage();
+        return JSONUtil.toJsonStr(map.get(task.getId()));
     }
 }

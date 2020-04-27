@@ -1,5 +1,9 @@
 package com.fr.coverage.gradle;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
+import com.fr.coverage.check.CheckService;
+import com.fr.coverage.jacoco.report.JacocoXmlCheckService;
 import org.gradle.tooling.GradleConnector;
 import org.gradle.tooling.ProjectConnection;
 
