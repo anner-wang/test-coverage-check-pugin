@@ -2,11 +2,6 @@ package com.fr.coverage.bean;
 
 import com.fr.stable.AssistUtils;
 
-/**
- * @description:
- * @author: Anner
- * @time: 2020/4/10 9:43
- */
 public class CodeLine {
     private String path;
     private int line;

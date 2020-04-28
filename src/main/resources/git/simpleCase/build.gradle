@@ -1,13 +1,13 @@
 plugins {
-    id 'java'
-    id 'java-library'
     id 'java-gradle-plugin'
+    id 'com.fr.common' version 'FEATURE1.0-SNAPSHOT'
+    id 'java-library'
 }
 
 allprojects {
     apply plugin: 'java-library'
     apply plugin: 'java-gradle-plugin'
-    apply plugin: 'jacoco'
+//    apply plugin: 'jacoco'
     sourceCompatibility = 1.8
 
     ext {
@@ -22,6 +22,7 @@ allprojects {
 
     dependencies {
         testImplementation 'junit:junit:4.12'
+        implementation 'com.fr.coverage:coverage-core:0.0.1-SNAPSHOT'
         testImplementation 'org.assertj:assertj-core:3.13.2'
         testImplementation "org.powermock:powermock-module-junit4:${powerMockVersion}"
         testImplementation "org.powermock:powermock-core:${powerMockVersion}"
@@ -30,67 +31,4 @@ allprojects {
         testImplementation "org.powermock:powermock-api-easymock:${powerMockVersion}"
     }
 
-
-    configurations {
-        jacocoConfig
-        jacocoRuntime
-    }
-
-    dependencies {
-        api localGroovy()
-        jacocoConfig group: 'org.jacoco', name: 'org.jacoco.ant', version: '0.8.4', classifier: 'nodeps'
-        jacocoRuntime group: 'org.jacoco', name: 'org.jacoco.agent', version: '0.8.4', classifier: 'runtime'
-    }
-
-    task instrument(dependsOn: ['classes']) {
-        ext.outputDir = buildDir.path + '/classes-instrumented'
-        doLast {
-            if (sourceSets.main.output.classesDirs.filter({ it.exists() }).isEmpty()) {
-                return
-            }
-            ant.taskdef(name: 'instrument',
-                    classname: 'org.jacoco.ant.InstrumentTask',
-                    classpath: configurations.jacocoConfig.asPath)
-            ant.instrument(destdir: outputDir) {
-                sourceSets.main.output.classesDirs.each { fileset(dir: it) }
-            }
-        }
-    }
-
-    def jacocoDir = rootProject.buildDir.path + '/jacoco/' + project.name
-    def jacocoExecPath = jacocoDir + '/jacoco.exec'
-
-    test.dependsOn('instrument')
-    gradle.taskGraph.whenReady { graph ->
-        if (graph.hasTask(instrument)) {
-            tasks.withType(Test) {
-                doFirst {
-                    systemProperty 'jacoco-agent.destfile', jacocoExecPath
-                    classpath = files(instrument.outputDir) + classpath + configurations.jacocoRuntime
-                }
-            }
-        }
-    }
-
-    jacocoTestReport {
-        reports {
-            csv.enabled false
-            xml.enabled true
-            html.enabled true
-            xml.destination file("${jacocoDir}/jacoco.xml")
-            html.destination file("${jacocoDir}/jacocoHtml")
-        }
-        executionData file(jacocoExecPath)
-    }
-
-    jacocoTestReport.onlyIf { file(jacocoExecPath).exists() }
-    jacocoTestReport.dependsOn(['instrument', 'test'])
-
-    test {
-        jacoco {
-            destinationFile = file(jacocoExecPath)
-            classDumpDir = file("${jacocoDir}/classpathdumps")
-        }
-        ignoreFailures = true
-    }
 }

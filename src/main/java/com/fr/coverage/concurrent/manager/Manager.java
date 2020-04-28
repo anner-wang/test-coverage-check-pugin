@@ -2,6 +2,8 @@ package com.fr.coverage.concurrent.manager;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.StaticLog;
+import com.fr.coverage.concurrent.RequestMap;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
@@ -39,21 +41,17 @@ public class Manager implements TaskListener {
         return null;
     }
 
-    private boolean isSameRunningTaskExist(Task task) {
-        for (Task runningTask : runningQueue) {
-            if (runningTask.getGroup().equals(task.getGroup())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public Task take() throws InterruptedException {
         Task task;
-        while ((task = tryTake()) == null) {
-            condition.await();
+        try {
+            lock.lock();
+            while ((task = tryTake()) == null) {
+                condition.await();
+            }
+            return task;
+        } finally {
+            lock.unlock();
         }
-        return task;
     }
 
     public void put(Task task) {
@@ -61,9 +59,40 @@ public class Manager implements TaskListener {
             lock.lock();
             waitQueue.add(task);
             StaticLog.info(StrUtil.format("Task {} put in the  wait queue, now size = {}", task.getId(), waitQueue.size()));
-            condition.notifyAll();
+            condition.signalAll();
         } catch (Exception ignore) {
 
+        } finally {
+            lock.unlock();
+        }
+    }
+
+
+    @Override
+    public void onStart(Task task) {
+        try {
+            lock.lock();
+            runningQueue.add(task);
+            StaticLog.info(StrUtil.format("Task {} put into  the running queue , now size = {}", task.getId(), runningQueue.size()));
+        } catch (Exception ignore) {
+
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    @Override
+    public void onFail(Task task) {
+    }
+
+    @Override
+    public void onComplete(Task task) {
+        try {
+            lock.lock();
+            runningQueue.remove(task);
+            condition.signal();
+            StaticLog.info(StrUtil.format("Task {} remove from the running queue ,  now size = {}", task.getId(), runningQueue.size()));
+        } catch (Exception ignore) {
         } finally {
             lock.unlock();
         }
@@ -93,30 +122,12 @@ public class Manager implements TaskListener {
         return -1;
     }
 
-    @Override
-    public void onStart(Task task) {
-        try {
-            lock.lock();
-            runningQueue.add(task);
-            StaticLog.info(StrUtil.format("Task {} put into  the running queue , now size = {}", task.getId(), runningQueue.size()));
-        } catch (Exception ignore) {
-
-        } finally {
-            lock.unlock();
+    private boolean isSameRunningTaskExist(Task task) {
+        for (Task runningTask : runningQueue) {
+            if (runningTask.getGroup().equals(task.getGroup())) {
+                return true;
+            }
         }
-    }
-
-    @Override
-    public void onComplete(Task task) {
-        try {
-            lock.lock();
-            runningQueue.remove(task);
-            condition.notifyAll();
-            StaticLog.info(StrUtil.format("Task {} remove from the running queue ,  now size = {}", task.getId(), runningQueue.size()));
-        } catch (Exception ignore) {
-
-        } finally {
-            lock.unlock();
-        }
+        return false;
     }
 }

@@ -57,6 +57,12 @@ public class GitTask implements Task {
     }
 
     @Override
+    public void fail() {
+        status = TaskStatus.FAIL;
+        taskListener.onFail(this);
+    }
+
+    @Override
     public void complete() {
         status = TaskStatus.FINISH;
         taskListener.onComplete(this);

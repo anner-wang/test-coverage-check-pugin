@@ -1,11 +1,8 @@
 package com.fr.coverage.concurrent.process;
 
-import cn.hutool.core.util.StrUtil;
-import com.fr.coverage.bean.ResponseInfo;
 import com.fr.coverage.concurrent.RequestMap;
 import com.fr.coverage.concurrent.manager.Manager;
 import com.fr.coverage.concurrent.manager.Task;
-import com.fr.coverage.concurrent.manager.TaskStatus;
 import com.fr.coverage.git.Calculate;
 import com.fr.coverage.git.RemoteCalculate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,20 +21,22 @@ public class AsyncService {
     }
 
     @Async("taskExecutor")
-    public void execute() {
-        Task task = null;
+    public void execute() throws InterruptedException {
+        Task task = manager.take();
+        double coverage = 0;
         try {
-            task = manager.take();
             task.start();
             map.updateStatus(task.getId(), task.getStatus());
             Calculate calculate = new RemoteCalculate(task.getFrom(), task.getTo());
-            double coverage = calculate.calTestCoverage();
+            coverage = calculate.calTestCoverage();
+            map.updateStatus(task.getId(), task.getStatus());
+        } catch (Exception e) { 
+            task.fail();
+            map.updateStatus(task.getId(), task.getStatus());
+            map.updateMessage(task.getId(), e.getMessage());
+        } finally {
             task.complete();
             map.updateCoverage(task.getId(), coverage);
-            map.updateStatus(task.getId(), task.getStatus());
-        } catch (Exception e) {
-            map.updateStatus(task.getId(), TaskStatus.FAIL);
-            map.updateMessage(task.getId(), e.getMessage());
         }
     }
 }

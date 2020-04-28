@@ -38,7 +38,7 @@ public class RequestMap {
     public void updateCoverage(String id, double coverage) {
         ResponseInfo responseInfo = map.get(id);
         update(id, coverage, responseInfo.getStatus(), responseInfo.getDetail());
-        StaticLog.info("Update request {}  coverage -> {} ", id, coverage);
+        StaticLog.warn("Update request {}  coverage -> {} ", id, coverage);
     }
 
     private void update(String id, double coverage, String status, String detail) {

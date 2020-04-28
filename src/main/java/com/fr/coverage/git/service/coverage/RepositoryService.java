@@ -35,7 +35,9 @@ public class RepositoryService {
      * @throws GitAPIException
      * @throws URISyntaxException
      */
-    public void fetch(String remoteName, String remoteURL) throws GitAPIException, URISyntaxException {
+    public void
+
+    fetch(String remoteName, String remoteURL) throws GitAPIException, URISyntaxException {
         try {
             git.fetch()
                     .setRemote(remoteName)
@@ -109,13 +111,5 @@ public class RepositoryService {
             ansList.add(remoteConfig.getName());
         }
         return ansList;
-    }
-
-    public static void main(String[] args) throws IOException, GitAPIException, URISyntaxException {
-        Repository repository = CookbookHelper.openGitRepo("/Users/anner/temp/simple-case/master/.git");
-        RepositoryService service = new RepositoryService(repository);
-//        service.fetch("user","ssh://git@localhost:7999/~user/simple-case.git");
-//        service.checkout("user","user","master");
-        service.pull("user", "master");
     }
 }

@@ -17,5 +17,7 @@ public interface Task {
 
     void start();
 
+    void fail();
+
     void complete();
 }
