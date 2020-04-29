@@ -40,8 +40,8 @@ public class HookController {
             return JSONUtil.toJsonStr(map.get(task.getId()));
         }
         manager.put(task);
-        map.put(task.getId());
+        map.put(latestCommitId, task);
         asyncService.execute();
-        return JSONUtil.toJsonStr(map.get(task.getId()));
+        return JSONUtil.toJsonStr(new ResponseInfo(map.get(task.getId())));
     }
 }

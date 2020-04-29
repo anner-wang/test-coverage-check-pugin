@@ -2,8 +2,6 @@ package com.fr.coverage.concurrent.manager;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.StaticLog;
-import com.fr.coverage.concurrent.RequestMap;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
@@ -31,6 +29,7 @@ public class Manager implements TaskListener {
                     return null;
                 }
                 waitQueue.poll();
+                StaticLog.info(StrUtil.format("Task {} take from the  wait queue, now size = {}", task.getId(), waitQueue.size()));
                 return task;
             }
         } catch (Exception ignore) {

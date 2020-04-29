@@ -20,7 +20,6 @@ public class ServerRun {
      * @param args
      */
     public static void main(String[] args) {
-        args = new String[]{"/Users/anner/temp","/Users/anner/coverage.json","localhost","7999"};
         if (args.length < 4) {
             throw new InvalidParameterException("Incorrect number of parameters");
         }

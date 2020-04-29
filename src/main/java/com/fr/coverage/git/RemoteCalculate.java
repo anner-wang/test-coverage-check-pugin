@@ -2,7 +2,6 @@ package com.fr.coverage.git;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.log.StaticLog;
 import com.fr.coverage.bean.CodeLine;
 import com.fr.coverage.bean.RemoteInfo;
 import com.fr.coverage.check.CheckService;
@@ -21,6 +20,7 @@ import org.eclipse.jgit.lib.Repository;
 
 import java.io.File;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class RemoteCalculate implements Calculate {
@@ -45,8 +45,7 @@ public class RemoteCalculate implements Calculate {
         List<DiffEntry> diffEntryList = diffService.getDiffList(repository);
 
         if (diffEntryList == null) {
-            StaticLog.error("The different code obtained is empty, and the program ends");
-            return 0;
+            throw new NoSuchElementException("The different code obtained is empty, and the program ends");
         }
 
         CoverageService coverageService = new CoverageService();

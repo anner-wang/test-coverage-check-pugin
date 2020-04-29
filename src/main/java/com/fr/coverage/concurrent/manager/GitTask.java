@@ -2,6 +2,7 @@ package com.fr.coverage.concurrent.manager;
 
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.log.StaticLog;
 import com.fr.coverage.bean.RemoteInfo;
 import com.fr.stable.AssistUtils;
 
@@ -9,7 +10,10 @@ public class GitTask implements Task {
     private RemoteInfo from;
     private RemoteInfo to;
     private String latestCommitId;
+
     private TaskStatus status;
+    private double coverage;
+    private String detail;
 
     private TaskListener taskListener;
 
@@ -19,6 +23,8 @@ public class GitTask implements Task {
         this.to = to;
         this.latestCommitId = latestCommitId;
         this.status = TaskStatus.WAIT;
+        this.coverage = 0;
+        this.detail = StrUtil.EMPTY;
     }
 
 
@@ -31,12 +37,35 @@ public class GitTask implements Task {
     }
 
     @Override
+    public double getCoverage() {
+        return coverage;
+    }
+
+    @Override
+    public void setCoverage(double coverage) {
+        StaticLog.warn(StrUtil.format("update {} coverage = {}", latestCommitId, coverage));
+        this.coverage = coverage;
+    }
+
+    @Override
+    public String getDetail() {
+        return detail;
+    }
+
+    @Override
+    public void setDetail(String detail) {
+        StaticLog.info(StrUtil.format("update {} detail = {}", latestCommitId, detail));
+        this.detail = detail;
+    }
+
+    @Override
     public TaskStatus getStatus() {
         return status;
     }
 
     @Override
     public void setStatus(TaskStatus taskStatus) {
+        StaticLog.info(StrUtil.format(" update={} status = {}", latestCommitId, status));
         status = taskStatus;
     }
 
@@ -64,7 +93,7 @@ public class GitTask implements Task {
 
     @Override
     public void complete() {
-        status = TaskStatus.FINISH;
+        status = status == TaskStatus.FAIL ? status : TaskStatus.FINISH;
         taskListener.onComplete(this);
     }
 

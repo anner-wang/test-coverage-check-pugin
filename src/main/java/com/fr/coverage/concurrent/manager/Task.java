@@ -15,6 +15,14 @@ public interface Task {
 
     String getGroup();
 
+    double getCoverage();
+
+    void setCoverage(double coverage);
+
+    String getDetail();
+
+    void setDetail(String detail);
+
     void start();
 
     void fail();

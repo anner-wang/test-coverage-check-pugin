@@ -1,7 +1,7 @@
 package com.fr.coverage.bean;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
+import com.fr.coverage.concurrent.manager.Task;
 import com.fr.coverage.concurrent.manager.TaskStatus;
 import com.fr.stable.AssistUtils;
 
@@ -14,6 +14,12 @@ public class ResponseInfo {
         this.coverage = 0;
         this.status = TaskStatus.WAIT.toString();
         this.detail = StrUtil.EMPTY;
+    }
+
+    public ResponseInfo(Task task) {
+        this.coverage = task.getCoverage();
+        this.status = task.getStatus().toString();
+        this.detail = task.getDetail();
     }
 
     public double getCoverage() {
@@ -60,11 +66,5 @@ public class ResponseInfo {
     @Override
     public int hashCode() {
         return AssistUtils.hashCode(status, coverage, detail);
-    }
-
-    public static void main(String[] args) {
-        ResponseInfo responseInfo = new ResponseInfo();
-        responseInfo.setDetail("1223123");
-        System.out.println(JSONUtil.toJsonStr(responseInfo));
     }
 }
