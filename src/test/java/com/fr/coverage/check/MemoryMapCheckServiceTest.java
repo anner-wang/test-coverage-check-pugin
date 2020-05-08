@@ -1,11 +1,14 @@
 package com.fr.coverage.check;
 
-import com.fr.coverage.bean.CodeLine;
+
+import com.fr.coverage.core.bean.CodeLine;
+import com.fr.coverage.core.check.MemoryMapCheckService;
 import junit.framework.TestCase;
 import org.junit.Before;
 
 import java.util.HashMap;
 import java.util.Map;
+
 
 /**
  * @author Hiram

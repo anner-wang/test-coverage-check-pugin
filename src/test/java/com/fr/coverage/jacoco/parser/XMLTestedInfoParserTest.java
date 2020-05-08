@@ -1,7 +1,8 @@
 package com.fr.coverage.jacoco.parser;
 
-import com.fr.coverage.bean.CodeLine;
-import com.fr.coverage.utils.TestResourceUtils;
+import com.fr.coverage.core.bean.CodeLine;
+import com.fr.coverage.core.jacoco.parser.XMLTestedInfoParser;
+import com.fr.coverage.core.utils.TestResourceUtils;
 import junit.framework.TestCase;
 
 import java.util.Map;

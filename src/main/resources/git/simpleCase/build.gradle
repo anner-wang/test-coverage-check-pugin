@@ -22,7 +22,7 @@ allprojects {
 
     dependencies {
         testImplementation 'junit:junit:4.12'
-        implementation 'com.fr.coverage:coverage-core:0.0.1-SNAPSHOT'
+        implementation 'com.fr.com.fr.coverage:com.fr.coverage-core:0.0.1-SNAPSHOT'
         testImplementation 'org.assertj:assertj-core:3.13.2'
         testImplementation "org.powermock:powermock-module-junit4:${powerMockVersion}"
         testImplementation "org.powermock:powermock-core:${powerMockVersion}"

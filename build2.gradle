@@ -28,7 +28,7 @@ dependencies {
 
 group = 'com.fr'
 version = '0.0.1-SNAPSHOT'
-description = 'check-test-coverage'
+description = 'check-test-com.fr.coverage'
 sourceCompatibility = '1.8'
 
 

@@ -1,13 +1,1 @@
-pluginManagement {
-    repositories {
-        maven {
-            url 'http://mvn.finedevelop.com/repository/maven-public/'
-        }
-        gradlePluginPortal()
-    }
-}
-rootProject.name = 'gitTestResource'
-include 'subModule1'
-include 'emptyModule'
-include 'instrumentedModule'
-
+rootProject.name = 'coverage-core'

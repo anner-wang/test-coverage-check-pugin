@@ -1,6 +1,7 @@
 package com.fr.coverage.jacoco.parser;
 
 
+import com.fr.coverage.core.jacoco.parser.FilePathConverter;
 import com.fr.stable.StringUtils;
 import junit.framework.TestCase;
 

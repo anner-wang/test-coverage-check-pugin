@@ -1,6 +1,7 @@
 package com.fr.coverage.jacoco.parser;
 
-import com.fr.coverage.utils.TestResourceUtils;
+import com.fr.coverage.core.jacoco.parser.JacocoXmlFinder;
+import com.fr.coverage.core.utils.TestResourceUtils;
 import junit.framework.TestCase;
 import org.junit.Test;
 

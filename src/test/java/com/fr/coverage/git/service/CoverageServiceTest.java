@@ -2,16 +2,17 @@ package com.fr.coverage.git.service;
 
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
-import com.fr.coverage.bean.CodeLine;
-import com.fr.coverage.bean.LocalInfo;
-import com.fr.coverage.check.MemoryMapCheckService;
-import com.fr.coverage.git.service.coverage.CoverageService;
-import com.fr.coverage.git.helper.CookbookHelper;
-import com.fr.coverage.check.CheckService;
-import com.fr.coverage.check.CheckServiceMocker;
-import com.fr.coverage.json.bean.JsonInfo;
-import com.fr.coverage.utils.TestResourceUtils;
+import com.fr.coverage.core.bean.CodeLine;
+import com.fr.coverage.core.bean.LocalInfo;
+import com.fr.coverage.core.check.CheckService;
+import com.fr.coverage.core.check.CheckServiceMocker;
+import com.fr.coverage.core.check.MemoryMapCheckService;
+import com.fr.coverage.core.git.helper.CookbookHelper;
+import com.fr.coverage.core.git.service.DiffService;
+import com.fr.coverage.core.git.service.LocalDiffService;
+import com.fr.coverage.core.git.service.coverage.CoverageService;
+import com.fr.coverage.core.json.bean.UncoveredJsonInfo;
+import com.fr.coverage.core.utils.TestResourceUtils;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.lib.Repository;
 import org.junit.Assert;
@@ -139,20 +140,20 @@ public class CoverageServiceTest {
         codeLineList.add(c3);
         codeLineList.add(c4);
         CoverageService coverageService = new CoverageService();
-        JsonInfo jsonInfo = coverageService.generateCoverageJsonObj(codeLineList, checkService);
-        Assert.assertEquals(2, jsonInfo.getDetail().size());
-        Assert.assertEquals("7-8", jsonInfo.getDetail().get("com.fr.test1.java"));
-        Assert.assertEquals("10", jsonInfo.getDetail().get("com.fr.test2.java"));
+        UncoveredJsonInfo uncoveredJsonInfo = coverageService.generateCoverageJsonObj(codeLineList, checkService);
+        Assert.assertEquals(2, uncoveredJsonInfo.getDetail().size());
+        Assert.assertEquals("7-8", uncoveredJsonInfo.getDetail().get("com.fr.test1.java"));
+        Assert.assertEquals("10", uncoveredJsonInfo.getDetail().get("com.fr.test2.java"));
         codeLineList.add(c5);
         codeLineList.add(c6);
         codeLineList.add(c7);
         codeLineList.add(c8);
         codeLineList.add(c9);
         coverageService = new CoverageService();
-        jsonInfo = coverageService.generateCoverageJsonObj(codeLineList, checkService);
-        Assert.assertEquals(3, jsonInfo.getDetail().size());
-        Assert.assertEquals("7-8", jsonInfo.getDetail().get("com.fr.test1.java"));
-        Assert.assertEquals("10", jsonInfo.getDetail().get("com.fr.test2.java"));
-        Assert.assertEquals("28,33-35", jsonInfo.getDetail().get("com.fr.test4.java"));
+        uncoveredJsonInfo = coverageService.generateCoverageJsonObj(codeLineList, checkService);
+        Assert.assertEquals(3, uncoveredJsonInfo.getDetail().size());
+        Assert.assertEquals("7-8", uncoveredJsonInfo.getDetail().get("com.fr.test1.java"));
+        Assert.assertEquals("10", uncoveredJsonInfo.getDetail().get("com.fr.test2.java"));
+        Assert.assertEquals("28,33-35", uncoveredJsonInfo.getDetail().get("com.fr.test4.java"));
     }
 }

@@ -1,7 +1,8 @@
 package com.fr.coverage.jacoco;
 
-import com.fr.coverage.jacoco.report.CoverageResult;
-import com.fr.coverage.utils.TestResourceUtils;
+import com.fr.coverage.core.jacoco.CodeLineCoverageReporter;
+import com.fr.coverage.core.jacoco.report.CoverageResult;
+import com.fr.coverage.core.utils.TestResourceUtils;
 import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
