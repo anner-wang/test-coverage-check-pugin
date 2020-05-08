@@ -1,28 +1,48 @@
-## 代码测试覆盖率检测插件
+## 测试代码覆盖率插件
 
-#### 1. 背景
 
-众所周知，TDD原则是软件开发的基本原则，对于业务代码，每一个开发者都需要写单元测试，以检测逻辑和驱动自己重构自己的代码结构。所以，代码的测试覆盖率的自动检测可以提升自己和公司的业务代码的质量。
 
-故，对于公司内部的仓库，可以结合bitbucket的hook对接本插件的接口，实现代码的测试覆盖率检测，继而可以拒绝不合格的代码的合并。
+导入依赖:
 
-#### 2. 基本的检测流程
+> ```groovy
+> implementation 'com.fr.coverage:coverage-core:0.1.0-SNAPSHOT'
+> ```
 
-* jgit 完成代码仓库的分布对比，获取commit的新增的代码
-* jcoco 完成代码的模拟测试，获取到有效代码行和被测试覆盖到的代码
-* hook 对接企业的仓库，注意需要有代码仓库的权限，才可以保证fetch最新的HEAD
-* springboot 异步检测和提供远程检测的接口
+使用示例
 
-本插件支持本地代码分支和远程仓库的检测
+```java
+ @Async("taskExecutor")
+    public void execute() throws InterruptedException {
+        Task task = manager.take();
+        try {
+            task.start();
+            // 获取到calculte对象
+            Calculate calculate = new RemoteCalculate(task.getFrom(), task.getTo());
+            // 可以计算出覆盖率、有效行、无效行等细节
+            UncoveredJsonInfo uncoveredJsonInfo = calculate.getUncoveredJsonInfo();
+            task.setCoverage(uncoveredJsonInfo.getCoverage());
+            task.setUncoveredJsonInfo(uncoveredJsonInfo);
+        } catch (Exception e) {
+            task.fail();
+            task.setDetail(e.getMessage());
+        } finally {
+            task.complete();
+        }
+    }
+```
 
-本地检测：
 
-` java -jar lcoalRun.jar LOCAL_GIT_PATH TARGET_REMOTE_NAME TARGET_REMOTE_BRANCH`
 
-远程监测：
+返回到计算对象为,如何使用看每一个人需要做什么了:
 
-`HTTP://SERVER_IP:PORT/hook/coverage?from={FROM_PULL_REQUEST}&to={TO_PULL_REQUEST}`
+```json
+{
+    "coverage": 0.42857142857142855,
+    "validLineNumber": 7,
+    "testedLineNumber": 3,
+    "detail": {
+        "com.fr.FrClass.java": "9-10,13-14"
+    }
+}
+```
 
-#### 3. 长期更新
-
-后期会对现在的代码进行集成测试，所以对于细节，会继续的更新，最终会提供最后的可执行文件
